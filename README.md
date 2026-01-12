@@ -171,7 +171,3 @@ Pruebas de validación:
   "details": ["monto is required", "fecha must be a valid date (YYYY-MM-DD)"]
 }
 ```
-
-Puedes agregar una request de prueba en Postman que envíe un payload incompleto y aserte que la respuesta tiene `error: "Validation error"` y que `details` contiene los mensajes esperados.
-
-Si quieres, puedo añadir esas requests de validación/preguntas directo al `postman_collection.json` para que queden automatizadas en la colección.
