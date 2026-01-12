@@ -1,0 +1,25 @@
+{
+  "info": {
+    "name": "Mini Inversiones",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Login",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\"username\": \"admin\", \"password\": \"adminpass\"}" },
+        "url": { "raw": "http://localhost:3000/login", "protocol": "http", "host": ["localhost"], "port": "3000", "path": ["login"] }
+      }
+    },
+    {
+      "name": "List Inversiones",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": { "raw": "http://localhost:3000/inversiones", "protocol": "http", "host": ["localhost"], "port": "3000", "path": ["inversiones"] }
+      }
+    }
+  ]
+}
