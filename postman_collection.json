@@ -11,15 +11,142 @@
         "header": [{ "key": "Content-Type", "value": "application/json" }],
         "body": { "mode": "raw", "raw": "{\"username\": \"admin\", \"password\": \"adminpass\"}" },
         "url": { "raw": "http://localhost:3000/login", "protocol": "http", "host": ["localhost"], "port": "3000", "path": ["login"] }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const body = pm.response.json();",
+              "if (body.token) pm.environment.set('token', body.token);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Login Analyst",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\"username\": \"analyst\", \"password\": \"analystpass\"}" },
+        "url": { "raw": "http://localhost:3000/login", "protocol": "http", "host": ["localhost"], "port": "3000", "path": ["login"] }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const body = pm.response.json();",
+              "if (body.token) pm.environment.set('tokenAnalyst', body.token);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "List Inversiones (Admin)",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": { "raw": "http://localhost:3000/inversiones", "protocol": "http", "host": ["localhost"], "port": "3000", "path": ["inversiones"] }
       }
     },
     {
-      "name": "List Inversiones",
+      "name": "List Inversiones (Analyst)",
       "request": {
         "method": "GET",
-        "header": [],
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{tokenAnalyst}}" }
+        ],
         "url": { "raw": "http://localhost:3000/inversiones", "protocol": "http", "host": ["localhost"], "port": "3000", "path": ["inversiones"] }
       }
+    },
+    {
+      "name": "Create Inversion (Admin)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "body": { "mode": "raw", "raw": "{\"cliente\":\"Cliente 2\",\"activo\":\"ACC-NEW\",\"monto\":5000,\"tipo\":\"Renta Variable\",\"fecha\":\"2025-02-01\",\"rentabilidad\":0.12}" },
+        "url": { "raw": "http://localhost:3000/inversiones", "protocol": "http", "host": ["localhost"], "port": "3000", "path": ["inversiones"] }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const body = pm.response.json();",
+              "if (body.id) pm.environment.set('lastId', body.id);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Create Inversion (Analyst)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{tokenAnalyst}}" }
+        ],
+        "body": { "mode": "raw", "raw": "{\"cliente\":\"Cliente 2\",\"activo\":\"ACC-NEW\",\"monto\":5000,\"tipo\":\"Renta Variable\",\"fecha\":\"2025-02-01\",\"rentabilidad\":0.12}" },
+        "url": { "raw": "http://localhost:3000/inversiones", "protocol": "http", "host": ["localhost"], "port": "3000", "path": ["inversiones"] }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Should be forbidden (403)', function () {",
+              "  pm.response.to.have.status(403);",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Delete Inversion (Admin)",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": { "raw": "http://localhost:3000/inversiones/{{lastId}}", "protocol": "http", "host": ["localhost"], "port": "3000", "path": ["inversiones", "{{lastId}}"] }
+      }
+    },
+    {
+      "name": "Delete Inversion (Analyst)",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{tokenAnalyst}}" }
+        ],
+        "url": { "raw": "http://localhost:3000/inversiones/{{lastId}}", "protocol": "http", "host": ["localhost"], "port": "3000", "path": ["inversiones", "{{lastId}}"] }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Should be forbidden (403)', function () {",
+              "  pm.response.to.have.status(403);",
+              "});"
+            ]
+          }
+        }
+      ]
     }
   ]
 }

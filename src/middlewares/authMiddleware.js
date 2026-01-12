@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const JWT_SECRET = process.env.JWT_SECRET || 'secret123';
+const { jwtSecret } = require('../config');
 
 function authenticateJWT(req, res, next) {
   const authHeader = req.headers.authorization;
@@ -10,7 +10,7 @@ function authenticateJWT(req, res, next) {
 
   const token = parts[1];
   try {
-    const payload = jwt.verify(token, JWT_SECRET);
+    const payload = jwt.verify(token, jwtSecret);
     req.user = payload;
     next();
   } catch (err) {
@@ -18,10 +18,16 @@ function authenticateJWT(req, res, next) {
   }
 }
 
-function authorizeRole(role) {
+/**
+ * authorizeRole - accepts a string role or an array of allowed roles
+ * @param {string|string[]} allowed
+ */
+function authorizeRole(allowed) {
   return (req, res, next) => {
     if (!req.user) return res.status(401).json({ error: 'Not authenticated' });
-    if (req.user.role !== role) return res.status(403).json({ error: 'Forbidden: insufficient role' });
+    const role = req.user.role;
+    const ok = Array.isArray(allowed) ? allowed.includes(role) : role === allowed;
+    if (!ok) return res.status(403).json({ error: 'Forbidden: insufficient role' });
     next();
   };
 }
